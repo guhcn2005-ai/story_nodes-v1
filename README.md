@@ -5,15 +5,6 @@ Permite que usuários escrevam suas próprias narrativas e explorem conteúdos c
 
 ---
 
-## 📸 Preview
-
-> (adicione aqui um print do seu projeto)
-
-```
-./assets/preview.jpg
-```
-
----
 
 ## ✨ Funcionalidades
 
