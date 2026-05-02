@@ -1,4 +1,5 @@
 // ===== MAIN APPLICATION =====
+// main.js - Gerencia a navegação, estado global e inicialização da aplicação - cuidado ao mexer
 
 // Estado atual
 let currentPage = "home";
@@ -69,6 +70,8 @@ function renderCurrentPage() {
 }
 
 // Atualizar navbar
+// No seu main.js, atualize a função updateNavbar para usar o novo logout
+
 function updateNavbar() {
     const navbarContainer = document.getElementById("navbar-container");
     if (navbarContainer) {
@@ -84,7 +87,7 @@ function updateNavbar() {
                     return;
                 }
                 if (page === "adminDashboard" && !isAdmin()) {
-                    alert("Acesso negado. Área restrita para administradores.");
+                    notifications.warning("Acesso negado. Área restrita para administradores.");
                     return;
                 }
                 navigateTo(page);
@@ -93,11 +96,9 @@ function updateNavbar() {
         
         const logoutBtn = document.getElementById("logoutBtn");
         if (logoutBtn) {
-            logoutBtn.addEventListener("click", (e) => {
+            logoutBtn.addEventListener("click", async (e) => {
                 e.preventDefault();
-                logout();
-                updateNavbar();
-                navigateTo("home");
+                await logout(); // Agora é assíncrono
             });
         }
     }
@@ -122,44 +123,44 @@ function attachPageSpecificEvents() {
     }
     
     // Eventos de Login
-    const doLoginBtn = document.getElementById("doLogin");
-    if (doLoginBtn) {
-        doLoginBtn.addEventListener("click", () => {
-            const email = document.getElementById("loginEmail")?.value || "";
-            const password = document.getElementById("loginPassword")?.value || "";
+  //  const doLoginBtn = document.getElementById("doLogin");
+    //if (doLoginBtn) {
+      //  doLoginBtn.addEventListener("click", () => {
+        //    const email = document.getElementById("loginEmail")?.value || "";
+          //  const password = document.getElementById("loginPassword")?.value || "";
             
-            const result = login(email, password);
-            if (result.success) {
-                updateNavbar();
-                if (isAdmin()) {
-                    navigateTo("adminDashboard");
-                } else {
-                    navigateTo("dashboard");
-                }
-            } else {
-                alert(result.message || "Credenciais inválidas. Tente admin@story.com / admin123");
-            }
-        });
-    }
+           // const result = login(email, password);
+            //if (result.success) {
+              //  updateNavbar();
+                //if (isAdmin()) {
+                 //   navigateTo("adminDashboard");
+                //} else {
+                //    navigateTo("dashboard");
+               // }
+            //} else {
+              //  alert(result.message || "Usuario logado com sucesso");
+            //}
+        //});
+    //} 
     
     // Eventos de Cadastro
-    const doRegisterBtn = document.getElementById("doRegister");
-    if (doRegisterBtn) {
-        doRegisterBtn.addEventListener("click", () => {
-            const name = document.getElementById("regName")?.value || "";
-            const email = document.getElementById("regEmail")?.value || "";
-            const password = document.getElementById("regPassword")?.value || "";
-            const termsAccepted = document.getElementById("termsCheck")?.checked || false;
+    //const doRegisterBtn = document.getElementById("doRegister");
+    //if (doRegisterBtn) {
+      //  doRegisterBtn.addEventListener("click", () => {
+        //    const name = document.getElementById("regName")?.value || "";
+          //  const email = document.getElementById("regEmail")?.value || "";
+            //const password = document.getElementById("regPassword")?.value || "";
+            //const termsAccepted = document.getElementById("termsCheck")?.checked || false;
             
-            const result = register(name, email, password, termsAccepted);
-            if (result.success) {
-                updateNavbar();
-                navigateTo("dashboard");
-            } else {
-                alert(result.message);
-            }
-        });
-    }
+            //const result = register(name, email, password, termsAccepted);
+            //if (result.success) {
+              //  updateNavbar();
+                //navigateTo("dashboard");
+            //} else {
+              //  alert(result.message);
+            //}
+        //});
+   // }
     
     // Eventos da página Explorar
     const searchInput = document.getElementById("searchExplore");
@@ -248,3 +249,11 @@ function init() {
 
 // Iniciar quando o DOM estiver pronto
 document.addEventListener("DOMContentLoaded", init);
+
+
+// Não esquecer de declarar updateFooter globalmente
+
+// Iniciar quando o DOM estiver pronto
+document.addEventListener("DOMContentLoaded", init); // inicia a aplicação, não mexer esta linha
+
+// ===== FIM DO MAIN APPLICATION =====

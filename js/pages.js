@@ -1,4 +1,5 @@
 // ===== RENDERIZAÇÃO DAS PÁGINAS =====
+// parte mais sensivel do projeto - cuidado ao mexer, mudanças podem quebrar a aplicação (quase todas as páginas dependem desta parte para renderizar, então cuidado ao mexer aqui)
 
 let exploreOffset = 0;
 let currentExploreFilter = {
@@ -124,7 +125,7 @@ function renderTrending() {
     
     return `
         <div class="container">
-            <h1>🔥 Em Alta</h1>
+            <h1>Em Alta</h1>
             <p>Histórias mais comentadas e interativas da semana</p>
             <div class="card-grid">
                 ${trendingStories.map(renderStoryCard).join("")}
@@ -223,8 +224,8 @@ function renderDashboard() {
             <div class="dashboard-header">
                 <div class="dashboard-title-section">
                     <h1>Meu Painel</h1>
-                    <p>Bem-vindo de volta, <strong>${user?.name || "Autor"}</strong>! Aqui está o resumo da sua carreira como escritor.</p>
-                </div>
+                    <p>Bem-vindo de volta, <strong>${user?.name || "Visitante"}</strong>! Aqui está o resumo da sua carreira como escritor.</p> 
+                </div> 
                 <button class="btn-primary btn" id="createNewStoryBtn">
                     <i class="fas fa-plus"></i> Criar Nova História
                 </button>

@@ -1,4 +1,5 @@
 // ===== COMPONENTES REUTILIZÁVEIS =====
+//podemos criar mais componentes aqui, como cards de histórias, botões personalizados, etc. Cuidado ao mexer nesta parte, mudanças podem afetar várias páginas que dependem desses componentes
 
 // Renderiza um card de história
 function renderStoryCard(story) {
