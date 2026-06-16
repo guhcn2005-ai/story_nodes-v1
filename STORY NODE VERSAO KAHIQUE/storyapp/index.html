@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryNodes - Plataforma de Histórias Interativas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* ==================== HEADER ==================== */
+        header {
+            background: white;
+            border-bottom: 1px solid #cbd5e0;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a202c;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #4a5568;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #1a202c;
+        }
+
+        nav a.active {
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #4a5568;
+        }
+
+        .login-btn {
+            background: none;
+            border: none;
+            color: #4a5568;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .register-btn {
+            background: #1a202c;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .register-btn:hover {
+            background: #2d3748;
+        }
+
+        /* ==================== MAIN CONTENT ==================== */
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* ==================== EXPLORE PAGE ==================== */
+        .explore-header {
+            margin-bottom: 2rem;
+        }
+
+        .explore-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .explore-header p {
+            font-size: 1.1rem;
+            color: #4a5568;
+        }
+
+        .search-box {
+            background: white;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+        }
+
+        .search-box input::placeholder {
+            color: #a0aec0;
+        }
+
+        .categories {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .category-btn {
+            background: white;
+            border: 1px solid #cbd5e0;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .category-btn:hover {
+            border-color: #1a202c;
+            color: #1a202c;
+        }
+
+        .category-btn.active {
+            background: #1a202c;
+            color: white;
+            border-color: #1a202c;
+        }
+
+        .sort-tabs {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 1rem;
+        }
+
+        .sort-tab {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #4a5568;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .sort-tab:hover {
+            color: #1a202c;
+        }
+
+        .sort-tab.active {
+            color: #1a202c;
+            font-weight: 600;
+        }
+
+        .sort-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #1a202c;
+        }
+
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .story-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .story-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            position: relative;
+        }
+
+        .story-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(26, 32, 44, 0.9);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .story-content {
+            padding: 1.5rem;
+        }
+
+        .story-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+
+        .story-author {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-bottom: 0.8rem;
+        }
+
+        .story-description {
+            font-size: 0.95rem;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .story-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #a0aec0;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+        }
+
+        /* ==================== STORY DETAIL PAGE ==================== */
+        .story-detail-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .story-progress {
+            margin-bottom: 2rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #cbd5e0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1a202c;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .story-text-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            color: #333;
+        }
+
+        .story-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+        }
+
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .choice-btn {
+            background: white;
+            border: 2px solid #cbd5e0;
+            padding: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s;
+            font-size: 1rem;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .choice-btn:hover {
+            border-color: #1a202c;
+            background: #f0f0f0;
+        }
+
+        .choice-btn::after {
+            content: '→';
+            color: #1a202c;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .choice-btn:hover::after {
+            opacity: 1;
+        }
+
+        .story-actions {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #a0aec0;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .action-btn:hover {
+            color: #1a202c;
+        }
+
+        .action-btn.liked {
+            color: #e74c3c;
+        }
+
+        .action-icon {
+            font-size: 1.5rem;
+        }
+
+        .action-count {
+            font-size: 0.8rem;
+        }
+
+        /* ==================== COMMENTS SECTION ==================== */
+        .comments-section {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .comments-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-comment {
+            margin-bottom: 2rem;
+        }
+
+        .comment-input-wrapper {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .comment-input-area {
+            flex: 1;
+        }
+
+        .comment-input-area textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #cbd5e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .comment-input-area textarea:focus {
+            border-color: #1a202c;
+        }
+
+        .comment-input-area textarea::placeholder {
+            color: #a0aec0;
+        }
+
+        .comment-submit {
+            margin-top: 0.8rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .submit-comment-btn {
+            background: #1a202c;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .submit-comment-btn:hover {
+            background: #2d3748;
+        }
+
+        .comments-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comment-item:last-child {
+            border-bottom: none;
+        }
+
+        .comment-avatar-small {
+            width: 36px;
+            height: 36px;
+            background: #cbd5e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4a5568;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            margin-bottom: 0.3rem;
+            flex-wrap: wrap;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #1a202c;
+            font-size: 0.95rem;
+        }
+
+        .comment-date {
+            font-size: 0.75rem;
+            color: #a0aec0;
+        }
+
+        .comment-text {
+            color: #4a5568;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .comment-like {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: color 0.3s;
+        }
+
+        .comment-like:hover {
+            color: #e74c3c;
+        }
+
+        .comment-like.liked {
+            color: #e74c3c;
+        }
+
+        .comment-reply {
+            background: none;
+            border: none;
+            color: #a0aec0;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .comment-reply:hover {
+            color: #1a202c;
+        }
+
+        .replies {
+            margin-left: 3rem;
+            margin-top: 0.8rem;
+            padding-left: 1rem;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        .reply-item {
+            display: flex;
+            gap: 0.8rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .reply-item:last-child {
+            border-bottom: none;
+        }
+
+        .no-comments {
+            text-align: center;
+            color: #a0aec0;
+            padding: 2rem;
+        }
+
+        /* ==================== BACK BUTTON ==================== */
+        .back-btn {
+            background: white;
+            border: 1px solid #cbd5e0;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #4a5568;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #f0f0f0;
+            border-color: #1a202c;
+            color: #1a202c;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .explore-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .story-actions {
+                gap: 1rem;
+            }
+
+            .categories {
+                gap: 0.5rem;
+            }
+
+            .category-btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .comment-input-wrapper {
+                flex-direction: column;
+            }
+
+            .replies {
+                margin-left: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== HEADER ==================== -->
+    <header>
+        <div class="logo">
+            <span>StoryNodes</span>
+        </div>
+        <nav>
+            <a href="#" class="nav-link active" data-page="explore">Explorar</a>
+            <a href="#" class="nav-link" data-page="explore">Em Alta</a>
+        </nav>
+        <div class="header-actions">
+         
+        </div>
+    </header>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main>
+        <!-- ==================== EXPLORE PAGE ==================== -->
+        <div id="explore" class="page active">
+            <div class="explore-header">
+                <h1>Explorar Histórias</h1>
+                <p>Descubra narrativas interativas criadas pela comunidade</p>
+            </div>
+
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="searchInput" placeholder="Buscar histórias, autores, categorias...">
+            </div>
+
+            <div class="categories">
+                <button class="category-btn active" data-category="todos">Todos</button>
+                <button class="category-btn" data-category="fantasia">Fantasia</button>
+                <button class="category-btn" data-category="misterio">Mistério</button>
+                <button class="category-btn" data-category="romance">Romance</button>
+                <button class="category-btn" data-category="ficcao">Ficção Científica</button>
+                <button class="category-btn" data-category="terror">Terror</button>
+                <button class="category-btn" data-category="aventura">Aventura</button>
+                <button class="category-btn" data-category="drama">Drama</button>
+            </div>
+
+            <div class="sort-tabs">
+                <button class="sort-tab active" data-sort="populares">
+                    <span>📈</span> Populares
+                </button>
+                <button class="sort-tab" data-sort="recentes">
+                    <span>⏱️</span> Recentes
+                </button>
+                <button class="sort-tab" data-sort="avaliadas">
+                    <span>⭐</span> Melhor Avaliadas
+                </button>
+            </div>
+
+            <div class="stories-grid" id="storiesGrid">
+                <!-- Stories will be inserted here by JavaScript -->
+            </div>
+        </div>
+
+        <!-- ==================== STORY DETAIL PAGE ==================== -->
+        <div id="story-detail" class="page">
+            <button class="back-btn" onclick="goBack()">← Voltar</button>
+            
+            <div class="story-detail-container">
+                <div class="story-progress">
+                    <div class="progress-label">
+                        <span>Progresso da sua jornada</span>
+                        <span id="decisionsCount">0 decisões tomadas</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="story-text-box">
+                    <p id="storyText"></p>
+                </div>
+
+                <div class="story-question">
+                    <p id="storyQuestion">O que você deseja fazer?</p>
+                </div>
+
+                <div class="choices" id="choicesContainer">
+                    <!-- Choices will be inserted here by JavaScript -->
+                </div>
+
+                <div class="story-actions">
+                    <button class="action-btn" id="likeBtn" onclick="toggleLike()">
+                        <div class="action-icon">🤍</div>
+                        <div class="action-count"><span id="likeCount">3.2k</span> curtidas</div>
+                    </button>
+                    <button class="action-btn" id="commentsBtn" onclick="scrollToComments()">
+                        <div class="action-icon">💬</div>
+                        <div class="action-count"><span id="commentCount">0</span> comentários</div>
+                    </button>
+                    <button class="action-btn" onclick="alert('Estatísticas - em breve!')">
+                        <div class="action-icon">📊</div>
+                        <div class="action-count">Ver estatísticas</div>
+                    </button>
+                </div>
+
+                <!-- COMMENTS SECTION -->
+                <div class="comments-section" id="commentsSection">
+                    <div class="comments-title">
+                        💬 Comentários
+                    </div>
+                    
+                    <div class="add-comment">
+                        <div class="comment-input-wrapper">
+                            <div class="comment-avatar">👤</div>
+                            <div class="comment-input-area">
+                                <textarea id="commentInput" rows="3" placeholder="Deixe seu comentário..."></textarea>
+                                <div class="comment-submit">
+                                    <button class="submit-comment-btn" onclick="addComment()">Publicar comentário</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comments-list" id="commentsList">
+                        <!-- Comments will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // ==================== DATA ==================== 
+        const stories = [
+            {
+                id: 1,
+                title: "A Jornada do Herói Esquecido",
+                author: "Maria Silva",
+                category: "fantasia",
+                image: "img/historia1.jpg",
+                description: "Você acorda em uma floresta escura, sem memórias de como chegou ali. O som de folhas sendo esmagadas ecoa atrás de você. À sua frente, um caminho iluminado por luzes misteriosas. O que você faz?",
+                likes: 3200,
+                comments: 245,
+                content: "Você acorda em uma floresta escura, sem memórias de como chegou ali. O som de folhas sendo esmagadas ecoa atrás de você. À sua frente, um caminho iluminado por luzes misteriosas. O que você faz?",
+                choices: [
+                    { text: "Seguir as luzes misteriosas", next: 2 },
+                    { text: "Investigar o som atrás de você", next: 3 },
+                    { text: "Procurar por abrigo", next: 4 }
+                ],
+                nodes: {
+                    1: {
+                        text: "Você acorda em uma floresta escura, sem memórias de como chegou ali. O som de folhas sendo esmagadas ecoa atrás de você. À sua frente, um caminho iluminado por luzes misteriosas.",
+                        question: "O que você deseja fazer?",
+                        choices: [
+                            { text: "Seguir as luzes misteriosas", next: 2 },
+                            { text: "Investigar o som atrás de você", next: 3 },
+                            { text: "Procurar por abrigo", next: 4 }
+                        ]
+                    },
+                    2: {
+                        text: "Você segue as luzes misteriosas e descobre um portal antigo. Símbolos brilham em suas paredes. Parece ser uma passagem para outro mundo.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Entrar no portal", next: 5 },
+                            { text: "Estudar os símbolos primeiro", next: 6 }
+                        ]
+                    },
+                    3: {
+                        text: "Você se vira e vê uma criatura luminosa. Ela não parece agressiva, apenas curiosa. Seus olhos brilham com inteligência.",
+                        question: "Como você reage?",
+                        choices: [
+                            { text: "Aproximar-se lentamente", next: 7 },
+                            { text: "Correr para a floresta", next: 8 }
+                        ]
+                    },
+                    4: {
+                        text: "Você encontra uma cabana antiga entre as árvores. Fumaça sai de sua chaminé. Alguém está dentro.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Bater na porta", next: 9 },
+                            { text: "Espreitar pela janela", next: 10 }
+                        ]
+                    },
+                    5: {
+                        text: "Você entra no portal e é transportado para um reino mágico. Cidades flutuantes e criaturas fantásticas cercam você. Você finalmente encontrou seu verdadeiro lar.",
+                        question: "Fim da história - Parabéns!",
+                        choices: []
+                    },
+                    6: {
+                        text: "Ao estudar os símbolos, você descobre que são um mapa. Ele leva a um tesouro antigo escondido na floresta.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Seguir o mapa", next: 11 },
+                            { text: "Voltar para casa", next: 12 }
+                        ]
+                    },
+                    7: {
+                        text: "A criatura se aproxima e toca sua testa. Você tem uma visão de seu passado esquecido. Você era um guardião deste mundo!",
+                        question: "Você aceita seu destino?",
+                        choices: [
+                            { text: "Sim, abraçar meu destino", next: 13 },
+                            { text: "Não, quero minha vida antiga", next: 14 }
+                        ]
+                    },
+                    8: {
+                        text: "Você corre pela floresta, mas a criatura o segue. Eventualmente, você se vê preso em um penhasco. A criatura se aproxima lentamente.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Pular do penhasco", next: 15 },
+                            { text: "Enfrentar a criatura", next: 16 }
+                        ]
+                    },
+                    9: {
+                        text: "Uma mulher idosa abre a porta. Seus olhos parecem conhecê-lo. 'Finalmente você voltou', ela diz com um sorriso.",
+                        question: "O que você responde?",
+                        choices: [
+                            { text: "Quem você é?", next: 17 },
+                            { text: "Eu não te conheço", next: 18 }
+                        ]
+                    },
+                    10: {
+                        text: "Pela janela, você vê uma mulher idosa preparando chá. Ela parece estar esperando alguém. Há fotos antigas na parede que parecem ser suas.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Bater na porta", next: 9 },
+                            { text: "Continuar observando", next: 19 }
+                        ]
+                    },
+                    11: {
+                        text: "Você segue o mapa e encontra um baú antigo cheio de ouro e joias. Você é agora rico e pode viver confortavelmente.",
+                        question: "Fim da história - Riqueza encontrada!",
+                        choices: []
+                    },
+                    12: {
+                        text: "Você volta para casa, mas nunca consegue esquecer da floresta. Às noites, você sonha com o portal e o tesouro perdido.",
+                        question: "Fim da história - Vida comum",
+                        choices: []
+                    },
+                    13: {
+                        text: "Você abraça seu destino como guardião. A criatura revela que você tem poderes mágicos. Você salva o reino de uma ameaça antiga.",
+                        question: "Fim da história - Herói Verdadeiro!",
+                        choices: []
+                    },
+                    14: {
+                        text: "Você rejeita seu destino e a criatura desaparece. Você encontra o caminho de volta para casa, mas sente que perdeu algo importante.",
+                        question: "Fim da história - Escolha Perdida",
+                        choices: []
+                    },
+                    15: {
+                        text: "Você pula do penhasco e cai em um rio abaixo. A água mágica o cura e você sobrevive. Você descobre uma civilização subterrânea.",
+                        question: "Fim da história - Novo Mundo Descoberto!",
+                        choices: []
+                    },
+                    16: {
+                        text: "Você enfrenta a criatura com coragem. Ela revela ser um protetor, não um inimigo. Juntos, vocês derrotam uma ameaça maior.",
+                        question: "Fim da história - Aliança Formada!",
+                        choices: []
+                    },
+                    17: {
+                        text: "A mulher explica que é sua avó. Você foi perdido na floresta há muitos anos. Ela nunca perdeu a esperança de encontrá-lo.",
+                        question: "Fim da história - Família Reunida!",
+                        choices: []
+                    },
+                    18: {
+                        text: "A mulher fica triste e fecha a porta. Você continua vagando pela floresta, sempre se perguntando quem ela era.",
+                        question: "Fim da história - Oportunidade Perdida",
+                        choices: []
+                    },
+                    19: {
+                        text: "A mulher finalmente sai e o vê. Ela corre em sua direção com lágrimas nos olhos. 'Meu filho, você voltou!'",
+                        question: "Fim da história - Reencontro Emocional!",
+                        choices: []
+                    }
+                }
+            },
+            {
+                id: 2,
+                title: "Mistério no Laboratório",
+                author: "João Pedro",
+                category: "misterio",
+                image: "img/historia2.jpg",
+                description: "Resolva o mistério seguindo pistas e tomando decisões cruciais que determinarão quem é o culpado.",
+                likes: 2100,
+                comments: 156,
+                content: "Você é um detetive chamado para investigar um roubo em um laboratório de pesquisa avançada. Três suspeitos estão na sala.",
+                choices: [
+                    { text: "Interrogar o assistente de pesquisa", next: 2 },
+                    { text: "Examinar a cena do crime", next: 3 },
+                    { text: "Revistar os pertences dos suspeitos", next: 4 }
+                ],
+                nodes: {
+                    1: {
+                        text: "Você é um detetive chamado para investigar um roubo em um laboratório de pesquisa avançada. Três suspeitos estão na sala: Dr. Silva, a assistente Maria e o segurança João.",
+                        question: "Por onde você começa?",
+                        choices: [
+                            { text: "Interrogar o assistente de pesquisa", next: 2 },
+                            { text: "Examinar a cena do crime", next: 3 },
+                            { text: "Revistar os pertences dos suspeitos", next: 4 }
+                        ]
+                    },
+                    2: {
+                        text: "O assistente de pesquisa nega qualquer envolvimento. Ele parece nervoso, mas suas respostas são consistentes.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Interrogar o Dr. Silva", next: 5 },
+                            { text: "Interrogar o segurança", next: 6 }
+                        ]
+                    },
+                    3: {
+                        text: "Você encontra pegadas de sapato próximas à janela aberta. Elas combinam com o tamanho do pé do segurança.",
+                        question: "O que você conclui?",
+                        choices: [
+                            { text: "O segurança é o culpado", next: 7 },
+                            { text: "Investigar mais antes de acusar", next: 8 }
+                        ]
+                    },
+                    4: {
+                        text: "Você revista os pertences e encontra uma chave de laboratório no bolso de Maria. Ela não deveria ter acesso.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Acusar Maria imediatamente", next: 9 },
+                            { text: "Questionar Maria sobre a chave", next: 10 }
+                        ]
+                    },
+                    5: {
+                        text: "O Dr. Silva confessa que o roubo foi um seguro contra fraude. Ele planejou tudo para recuperar fundos perdidos.",
+                        question: "Fim da história - Caso Resolvido!",
+                        choices: []
+                    },
+                    6: {
+                        text: "O segurança revela que viu Maria saindo pela janela na noite do roubo. Ele não denunciou porque tinha medo.",
+                        question: "Fim da história - Culpada Identificada!",
+                        choices: []
+                    },
+                    7: {
+                        text: "Você acusa o segurança, mas depois descobre que ele é inocente. O verdadeiro culpado era o Dr. Silva. Você cometeu um erro.",
+                        question: "Fim da história - Erro Investigativo",
+                        choices: []
+                    },
+                    8: {
+                        text: "Você continua investigando e descobre que as pegadas foram plantadas. O verdadeiro culpado é o Dr. Silva.",
+                        question: "Fim da história - Investigação Completa!",
+                        choices: []
+                    },
+                    9: {
+                        text: "Maria confessa que roubou a pesquisa por encomenda de uma empresa concorrente. Caso resolvido!",
+                        question: "Fim da história - Espionagem Industrial!",
+                        choices: []
+                    },
+                    10: {
+                        text: "Maria explica que encontrou a chave no chão. Ela estava assustada e não sabia o que fazer. O verdadeiro culpado ainda está solto.",
+                        question: "Fim da história - Investigação Continua",
+                        choices: []
+                    }
+                }
+            },
+            {
+                id: 3,
+                title: "Romance nas Estrelas",
+                author: "Ana Costa",
+                category: "romance",
+                image: "img/historia3.jpg",
+                description: "Uma história de amor interativa com múltiplos caminhos românticos e emocionantes.",
+                likes: 4500,
+                comments: 523,
+                content: "Você encontra uma pessoa misteriosa observando as estrelas em um observatório abandonado.",
+                choices: [
+                    { text: "Aproximar-se e iniciar uma conversa", next: 2 },
+                    { text: "Observar de longe", next: 3 },
+                    { text: "Sair discretamente", next: 4 }
+                ],
+                nodes: {
+                    1: {
+                        text: "Você encontra uma pessoa misteriosa observando as estrelas em um observatório abandonado. A luz das estrelas ilumina seu rosto de forma mágica.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Aproximar-se e iniciar uma conversa", next: 2 },
+                            { text: "Observar de longe", next: 3 },
+                            { text: "Sair discretamente", next: 4 }
+                        ]
+                    },
+                    2: {
+                        text: "A pessoa se vira e sorri. 'Você também gosta de estrelas?' Vocês começam uma conversa profunda sobre sonhos e desejos.",
+                        question: "O que você diz?",
+                        choices: [
+                            { text: "Contar seus sonhos mais profundos", next: 5 },
+                            { text: "Fazer uma piada para quebrar o gelo", next: 6 }
+                        ]
+                    },
+                    3: {
+                        text: "Você observa de longe, mas a pessoa sente sua presença. Ela se vira e o convida para se aproximar.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Aproximar-se", next: 2 },
+                            { text: "Sair correndo", next: 4 }
+                        ]
+                    },
+                    4: {
+                        text: "Você sai discretamente, mas não consegue parar de pensar naquela pessoa. Você nunca saberá o que poderia ter sido.",
+                        question: "Fim da história - Oportunidade Perdida",
+                        choices: []
+                    },
+                    5: {
+                        text: "A pessoa fica emocionada com sua sinceridade. Vocês compartilham um momento mágico sob as estrelas. Um romance nasce.",
+                        question: "Fim da história - Amor Verdadeiro!",
+                        choices: []
+                    },
+                    6: {
+                        text: "A pessoa ri com sua piada. Vocês passam a noite conversando e rindo. É o começo de uma grande amizade.",
+                        question: "Fim da história - Amizade Especial",
+                        choices: []
+                    }
+                }
+            },
+            {
+                id: 4,
+                title: "A Floresta Encantada",
+                author: "Carlos Mendes",
+                category: "aventura",
+                image: "img/historia4.jpg",
+                description: "Uma aventura épica em uma floresta mágica cheia de mistérios e criaturas fantásticas.",
+                likes: 3800,
+                comments: 412,
+                content: "Você entra em uma floresta encantada onde a magia é real e os perigos são reais.",
+                choices: [
+                    { text: "Seguir um caminho de luzes", next: 2 },
+                    { text: "Explorar a floresta livremente", next: 3 },
+                    { text: "Construir um acampamento", next: 4 }
+                ],
+                nodes: {
+                    1: {
+                        text: "Você entra em uma floresta encantada onde a magia é real e os perigos são reais. Você pode ver luzes mágicas flutuando entre as árvores.",
+                        question: "O que você faz?",
+                        choices: [
+                            { text: "Seguir um caminho de luzes", next: 2 },
+                            { text: "Explorar a floresta livremente", next: 3 },
+                            { text: "Construir um acampamento", next: 4 }
+                        ]
+                    },
+                    2: {
+                        text: "Você segue as luzes e chega a um reino mágico escondido. Elfos e criaturas fantásticas o recebem como um herói.",
+                        question: "Fim da história - Reino Descoberto!",
+                        choices: []
+                    },
+                    3: {
+                        text: "Você explora livremente e encontra um dragão amigável. Ele oferece ajuda em sua jornada.",
+                        question: "Fim da história - Aliado Poderoso!",
+                        choices: []
+                    },
+                    4: {
+                        text: "Você constrói um acampamento seguro. Criaturas da floresta o respeitam e o deixam em paz.",
+                        question: "Fim da história - Paz Encontrada",
+                        choices: []
+                    }
+                }
+            }
+        ];
+
+        // ==================== COMMENTS DATA ====================
+        let storyComments = {
+            1: [
+                {
+                    id: 1,
+                    author: "LeitorViajante",
+                    text: "Que história incrível! Amei a ambientação da floresta mágica! 🌟",
+                    date: "2024-01-15T10:30:00",
+                    likes: 24,
+                    liked: false,
+                    replies: [
+                        {
+                            id: 101,
+                            author: "Maria Silva",
+                            text: "Fico feliz que tenha gostado! Essa foi minha primeira história interativa 😊",
+                            date: "2024-01-15T11:45:00",
+                            likes: 12,
+                            liked: false
+                        },
+                        {
+                            id: 102,
+                            author: "FantasyLover",
+                            text: "Concordo! As escolhas são muito bem pensadas",
+                            date: "2024-01-15T14:20:00",
+                            likes: 8,
+                            liked: false
+                        }
+                    ]
+                },
+                {
+                    id: 2,
+                    author: "BookWorm23",
+                    text: "Escolhi entrar no portal e foi a melhor decisão! Recomendo demais essa jornada.",
+                    date: "2024-01-14T18:15:00",
+                    likes: 42,
+                    liked: false,
+                    replies: []
+                },
+                {
+                    id: 3,
+                    author: "MysteryHunter",
+                    text: "A história tem um ótimo desenvolvimento de personagem. Parabéns ao autor! 👏",
+                    date: "2024-01-13T09:00:00",
+                    likes: 18,
+                    liked: false,
+                    replies: []
+                }
+            ],
+            2: [
+                {
+                    id: 1,
+                    author: "DetectiveFan",
+                    text: "Adorei resolver o mistério! Fiquei surpreso com o final.",
+                    date: "2024-01-16T20:00:00",
+                    likes: 15,
+                    liked: false,
+                    replies: []
+                },
+                {
+                    id: 2,
+                    author: "CrimeSolver",
+                    text: "Muito bem escrito! As pistas estão todas lá, é só prestar atenção.",
+                    date: "2024-01-15T16:30:00",
+                    likes: 9,
+                    liked: false,
+                    replies: []
+                }
+            ],
+            3: [
+                {
+                    id: 1,
+                    author: "RomanticSoul",
+                    text: "Que história linda! Me emocionei com o final verdadeiro 💕",
+                    date: "2024-01-17T12:00:00",
+                    likes: 56,
+                    liked: false,
+                    replies: [
+                        {
+                            id: 101,
+                            author: "StarGazer",
+                            text: "Também me emocionei! O encontro no observatório foi mágico ✨",
+                            date: "2024-01-17T13:15:00",
+                            likes: 23,
+                            liked: false
+                        }
+                    ]
+                }
+            ],
+            4: [
+                {
+                    id: 1,
+                    author: "AdventureSeeker",
+                    text: "A Floresta Encantada é meu tipo favorito de aventura! Quero mais!",
+                    date: "2024-01-16T22:00:00",
+                    likes: 31,
+                    liked: false,
+                    replies: []
+                }
+            ]
+        };
+
+        let currentStory = null;
+        let currentNode = 1;
+        let decisions = 0;
+        let liked = false;
+
+        // ==================== INITIALIZATION ==================== 
+        function init() {
+            renderStories();
+            setupEventListeners();
+        }
+
+        // ==================== RENDER STORIES ==================== 
+        function renderStories() {
+            const grid = document.getElementById('storiesGrid');
+            grid.innerHTML = '';
+
+            stories.forEach(story => {
+                const card = document.createElement('div');
+                card.className = 'story-card';
+                card.onclick = () => openStory(story.id);
+
+                card.innerHTML = `
+                    <div style="position: relative;">
+                        <img src="${story.image}" alt="${story.title}" class="story-image">
+                        <div class="story-badge">Interativa</div>
+                    </div>
+                    <div class="story-content">
+                        <div class="story-title">${story.title}</div>
+                        <div class="story-author">por ${story.author}</div>
+                        <div class="story-description">${story.description}</div>
+                        <div class="story-stats">
+                            <span>❤️ ${(story.likes / 1000).toFixed(1)}k curtidas</span>
+                            <span>💬 ${story.comments} comentários</span>
+                        </div>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // ==================== OPEN STORY ==================== 
+        function openStory(storyId) {
+            currentStory = stories.find(s => s.id === storyId);
+            currentNode = 1;
+            decisions = 0;
+            liked = false;
+
+            document.getElementById('explore').classList.remove('active');
+            document.getElementById('story-detail').classList.add('active');
+
+            renderStoryNode();
+            renderComments();
+            updateCommentCount();
+        }
+
+        // ==================== RENDER STORY NODE ==================== 
+        function renderStoryNode() {
+            const node = currentStory.nodes[currentNode];
+            const totalNodes = Object.keys(currentStory.nodes).length;
+            const progress = (currentNode / totalNodes) * 100;
+
+            document.getElementById('storyText').textContent = node.text;
+            document.getElementById('storyQuestion').textContent = node.question;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('decisionsCount').textContent = decisions + ' decisões tomadas';
+            document.getElementById('likeCount').textContent = (currentStory.likes / 1000).toFixed(1) + 'k';
+
+            const choicesContainer = document.getElementById('choicesContainer');
+            choicesContainer.innerHTML = '';
+
+            if (node.choices.length === 0) {
+                const endMessage = document.createElement('div');
+                endMessage.style.textAlign = 'center';
+                endMessage.style.padding = '2rem';
+                endMessage.innerHTML = `
+                    <p style="font-size: 1.2rem; color: #1a202c; margin-bottom: 1rem;">✨ ${node.question}</p>
+                    <button class="back-btn" onclick="goBack()" style="margin: 0 auto; display: block;">Voltar para Explorar</button>
+                `;
+                choicesContainer.appendChild(endMessage);
+            } else {
+                node.choices.forEach(choice => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.textContent = choice.text;
+                    btn.onclick = () => makeChoice(choice.next);
+                    choicesContainer.appendChild(btn);
+                });
+            }
+        }
+
+        // ==================== MAKE CHOICE ==================== 
+        function makeChoice(nextNode) {
+            currentNode = nextNode;
+            decisions++;
+            renderStoryNode();
+        }
+
+        // ==================== GO BACK ==================== 
+        function goBack() {
+            document.getElementById('story-detail').classList.remove('active');
+            document.getElementById('explore').classList.add('active');
+            currentStory = null;
+            currentNode = 1;
+            decisions = 0;
+        }
+
+        // ==================== TOGGLE LIKE ==================== 
+        function toggleLike() {
+            const btn = document.getElementById('likeBtn');
+            liked = !liked;
+
+            if (liked) {
+                btn.classList.add('liked');
+                btn.innerHTML = `
+                    <div class="action-icon">❤️</div>
+                    <div class="action-count"><span id="likeCount">${(currentStory.likes / 1000).toFixed(1)}k</span> curtidas</div>
+                `;
+            } else {
+                btn.classList.remove('liked');
+                btn.innerHTML = `
+                    <div class="action-icon">🤍</div>
+                    <div class="action-count"><span id="likeCount">${(currentStory.likes / 1000).toFixed(1)}k</span> curtidas</div>
+                `;
+            }
+        }
+
+        // ==================== COMMENTS FUNCTIONS ====================
+        function renderComments() {
+            if (!currentStory) return;
+            
+            const commentsList = document.getElementById('commentsList');
+            const comments = storyComments[currentStory.id] || [];
+            
+            if (comments.length === 0) {
+                commentsList.innerHTML = '<div class="no-comments">Nenhum comentário ainda. Seja o primeiro a comentar!</div>';
+                return;
+            }
+            
+            commentsList.innerHTML = '';
+            
+            comments.forEach(comment => {
+                const commentElement = createCommentElement(comment);
+                commentsList.appendChild(commentElement);
+            });
+        }
+        
+        function createCommentElement(comment, isReply = false) {
+            const div = document.createElement('div');
+            div.className = isReply ? 'reply-item' : 'comment-item';
+            
+            const date = new Date(comment.date);
+            const formattedDate = date.toLocaleDateString('pt-BR') + ' às ' + date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            div.innerHTML = `
+                <div class="comment-avatar-small">${comment.author.charAt(0).toUpperCase()}</div>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <span class="comment-author">${comment.author}</span>
+                        <span class="comment-date">${formattedDate}</span>
+                    </div>
+                    <div class="comment-text">${escapeHtml(comment.text)}</div>
+                    <div class="comment-actions">
+                        <button class="comment-like ${comment.liked ? 'liked' : ''}" onclick="toggleCommentLike(${comment.id})">
+                            ❤️ <span>${comment.likes}</span>
+                        </button>
+                        ${!isReply ? `<button class="comment-reply" onclick="showReplyInput(${comment.id})">💬 Responder</button>` : ''}
+                    </div>
+                    <div id="reply-input-${comment.id}" style="display: none; margin-top: 0.8rem;">
+                        <textarea id="reply-text-${comment.id}" rows="2" style="width: 100%; padding: 0.5rem; border: 1px solid #cbd5e0; border-radius: 6px; font-family: inherit; font-size: 0.85rem;" placeholder="Escreva sua resposta..."></textarea>
+                        <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                            <button class="submit-comment-btn" style="padding: 0.3rem 1rem; font-size: 0.8rem;" onclick="addReply(${comment.id})">Responder</button>
+                            <button class="back-btn" style="padding: 0.3rem 1rem; font-size: 0.8rem;" onclick="hideReplyInput(${comment.id})">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Add replies
+            if (comment.replies && comment.replies.length > 0 && !isReply) {
+                const repliesDiv = document.createElement('div');
+                repliesDiv.className = 'replies';
+                comment.replies.forEach(reply => {
+                    repliesDiv.appendChild(createCommentElement(reply, true));
+                });
+                div.appendChild(repliesDiv);
+            }
+            
+            return div;
+        }
+        
+        function addComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            
+            if (!text) {
+                alert('Por favor, digite um comentário.');
+                return;
+            }
+            
+            if (!storyComments[currentStory.id]) {
+                storyComments[currentStory.id] = [];
+            }
+            
+            const newComment = {
+                id: Date.now(),
+                author: "Você",
+                text: text,
+                date: new Date().toISOString(),
+                likes: 0,
+                liked: false,
+                replies: []
+            };
+            
+            storyComments[currentStory.id].unshift(newComment);
+            input.value = '';
+            renderComments();
+            updateCommentCount();
+        }
+        
+        function addReply(commentId) {
+            const replyText = document.getElementById(`reply-text-${commentId}`).value.trim();
+            
+            if (!replyText) {
+                alert('Por favor, digite uma resposta.');
+                return;
+            }
+            
+            const comments = storyComments[currentStory.id];
+            let targetComment = null;
+            
+            function findComment(commentList) {
+                for (let comment of commentList) {
+                    if (comment.id === commentId) {
+                        targetComment = comment;
+                        return true;
+                    }
+                    if (comment.replies && findComment(comment.replies)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            findComment(comments);
+            
+            if (targetComment) {
+                const newReply = {
+                    id: Date.now(),
+                    author: "Você",
+                    text: replyText,
+                    date: new Date().toISOString(),
+                    likes: 0,
+                    liked: false
+                };
+                
+                if (!targetComment.replies) targetComment.replies = [];
+                targetComment.replies.push(newReply);
+                
+                hideReplyInput(commentId);
+                renderComments();
+                updateCommentCount();
+            }
+        }
+        
+        function toggleCommentLike(commentId) {
+            const comments = storyComments[currentStory.id];
+            
+            function findAndToggle(commentList) {
+                for (let comment of commentList) {
+                    if (comment.id === commentId) {
+                        if (comment.liked) {
+                            comment.likes--;
+                            comment.liked = false;
+                        } else {
+                            comment.likes++;
+                            comment.liked = true;
+                        }
+                        return true;
+                    }
+                    if (comment.replies && findAndToggle(comment.replies)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            findAndToggle(comments);
+            renderComments();
+        }
+        
+        function showReplyInput(commentId) {
+            const inputDiv = document.getElementById(`reply-input-${commentId}`);
+            if (inputDiv) {
+                inputDiv.style.display = 'block';
+            }
+        }
+        
+        function hideReplyInput(commentId) {
+            const inputDiv = document.getElementById(`reply-input-${commentId}`);
+            if (inputDiv) {
+                inputDiv.style.display = 'none';
+                const textarea = document.getElementById(`reply-text-${commentId}`);
+                if (textarea) textarea.value = '';
+            }
+        }
+        
+        function updateCommentCount() {
+            const comments = storyComments[currentStory?.id] || [];
+            let totalComments = comments.length;
+            
+            comments.forEach(comment => {
+                if (comment.replies) {
+                    totalComments += comment.replies.length;
+                }
+            });
+            
+            const commentCountSpan = document.getElementById('commentCount');
+            if (commentCountSpan) {
+                commentCountSpan.textContent = totalComments;
+            }
+        }
+        
+        function scrollToComments() {
+            const commentsSection = document.getElementById('commentsSection');
+            if (commentsSection) {
+                commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ==================== EVENT LISTENERS ==================== 
+        function setupEventListeners() {
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            document.querySelectorAll('.sort-tab').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sort-tab').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

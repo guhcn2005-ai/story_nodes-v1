@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryNodes | Plataforma de Histórias Interativas</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Firebase compat (compatível com firebase.auth()) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<!-- APP ROOT -->
+<div id="app">
+
+    <!-- NAVBAR (SÓ CONTAINER, NÃO DUPLICAR NO JS) -->
+    <div id="navbar-container"></div>
+
+    <!-- PÁGINAS -->
+    <div id="home" class="page active-page"></div>
+    <div id="explore" class="page"></div>
+    <div id="trending" class="page"></div>
+    <div id="login" class="page"></div>
+    <div id="register" class="page"></div>
+    <div id="dashboard" class="page"></div>
+    <div id="adminDashboard" class="page"></div>
+
+    <!-- FOOTER (SÓ CONTAINER) -->
+    <div id="footer-container"></div>
+
+</div>
+
+<!-- SCRIPTS -->
+<!-- SCRIPTS - ORDEM CORRETA -->
+<script src="js/data.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/components.js"></script>
+<script src="js/pages.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
